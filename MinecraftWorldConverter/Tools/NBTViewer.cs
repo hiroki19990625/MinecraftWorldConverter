@@ -45,7 +45,7 @@ namespace MinecraftWorldConverter.Tools
                 if (data is CompoundTag)
                 {
                     CompoundTag compound = (CompoundTag) data;
-                    TreeNode node = nodes.Add(current.ListIndex != -1 ? current.ListIndex + "" : (compound.Name == "" ? "NoNameTag" : compound.Name));
+                    TreeNode node = nodes.Add(current.ListIndex != -1 ? current.ListIndex + "" : (compound.Name == "" ? "<NoNameTag>" : compound.Name));
                     node.ToolTipText = compound.GetType().Name;
                     foreach (Tag tag in compound.Tags.Values)
                     {
