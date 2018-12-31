@@ -34,9 +34,6 @@ namespace MinecraftWorldConverter.Convertor
             tag.PutDouble("double", 0.456789d);
             tag.PutCompound("compound", com);
             tag.PutList(list);
-
-            //NBTViewer viewer = new NBTViewer(tag);
-            //viewer.Show();
         }
 
         public Task[] ConvertProcess(MainForm form)
@@ -115,7 +112,7 @@ namespace MinecraftWorldConverter.Convertor
             }
 
             NBTViewer viewer = new NBTViewer(datas[0].Data);
-            viewer.Show();
+            viewer.ShowDialog();
         }
     }
 }
