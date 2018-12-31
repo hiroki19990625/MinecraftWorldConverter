@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using MineNET.NBT.Tags;
 
@@ -15,16 +16,29 @@ namespace MinecraftWorldConverter.Tools
             Tag = tag;
         }
 
-        private void NBTViewer_Load(object sender, System.EventArgs e)
+        private void NBTViewer_Load(object sender, EventArgs e)
+        {
+            BuildTree();
+        }
+
+        private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node.Tag != null)
+                value.Text = e.Node.Tag.ToString();
+            else
+                value.Text = "プレビュー出来ません。";
+        }
+
+        private void BuildTree()
         {
             Tag.Name = "Root";
 
-            Stack<NodeData> stack = new Stack<NodeData>(20);
-            stack.Push(new NodeData(treeView.Nodes, Tag));
+            Queue<NodeData> stack = new Queue<NodeData>(20);
+            stack.Enqueue(new NodeData(treeView.Nodes, Tag));
 
             while (stack.Count > 0)
             {
-                NodeData current = stack.Pop();
+                NodeData current = stack.Dequeue();
                 TreeNodeCollection nodes = current.Nodes;
                 Tag data = current.Tag;
 
@@ -37,12 +51,13 @@ namespace MinecraftWorldConverter.Tools
                     {
                         if (tag is CompoundTag || tag is ListTag)
                         {
-                            stack.Push(new NodeData(node.Nodes, tag));
+                            stack.Enqueue(new NodeData(node.Nodes, tag));
                         }
                         else
                         {
                             TreeNode child = node.Nodes.Add(tag.Name);
                             child.ToolTipText = tag.GetType().Name;
+                            SetTagValue(child, tag);
                         }
                     }
                 }
@@ -56,17 +71,65 @@ namespace MinecraftWorldConverter.Tools
                     {
                         if (tag is CompoundTag || tag is ListTag)
                         {
-                            stack.Push(new NodeData(node.Nodes, tag, index));
+                            stack.Enqueue(new NodeData(node.Nodes, tag, index));
                         }
                         else
                         {
                             TreeNode child = node.Nodes.Add("" + index);
                             child.ToolTipText = tag.GetType().Name;
+                            SetTagValue(child, tag);
                         }
 
                         index++;
                     }
                 }
+            }
+        }
+
+        private void SetTagValue(TreeNode node, Tag tag)
+        {
+            if (tag is ByteArrayTag)
+            {
+                ByteArrayTag byteArray = (ByteArrayTag) tag;
+                node.Tag = string.Join(Environment.NewLine, byteArray.Data);
+            }
+            else if (tag is IntArrayTag)
+            {
+                IntArrayTag intArray = (IntArrayTag) tag;
+                node.Tag = string.Join(Environment.NewLine, intArray.Data);
+            }
+            else if (tag is LongArrayTag)
+            {
+                LongArrayTag longArray = (LongArrayTag) tag;
+                node.Tag = string.Join(Environment.NewLine, longArray.Data);
+            }
+            else if (tag is ByteTag)
+            {
+                node.Tag = ((ByteTag) tag).Data;
+            }
+            else if (tag is ShortTag)
+            {
+                node.Tag = ((ShortTag) tag).Data;
+            }
+            else if (tag is IntTag)
+            {
+                node.Tag = ((IntTag) tag).Data;
+            }
+            else if (tag is LongTag)
+            {
+                node.Tag = ((LongTag) tag).Data;
+            }
+            else if (tag is FloatTag)
+            {
+                node.Tag = ((FloatTag) tag).Data;
+            }
+            else if (tag is DoubleTag)
+            {
+                node.Tag = ((DoubleTag) tag).Data;
+            }
+            else if (tag is StringTag)
+            {
+                node.Tag = ((StringTag) tag).Data;
             }
         }
 
