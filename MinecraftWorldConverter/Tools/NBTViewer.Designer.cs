@@ -28,62 +28,76 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.treeView = new System.Windows.Forms.TreeView();
-            this.label1 = new System.Windows.Forms.Label();
-            this.value = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.components = new System.ComponentModel.Container();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.fileFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFileOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabControlMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.閉じるCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip.SuspendLayout();
+            this.tabControlMenu.SuspendLayout();
             this.SuspendLayout();
             // 
-            // treeView
+            // menuStrip
             // 
-            this.treeView.Location = new System.Drawing.Point(12, 24);
-            this.treeView.Name = "treeView";
-            this.treeView.ShowNodeToolTips = true;
-            this.treeView.Size = new System.Drawing.Size(226, 425);
-            this.treeView.TabIndex = 0;
-            this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileFToolStripMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(884, 24);
+            this.menuStrip.TabIndex = 1;
+            this.menuStrip.Text = "menuStrip1";
             // 
-            // label1
+            // fileFToolStripMenuItem
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(28, 12);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Tree";
+            this.fileFToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openFileOToolStripMenuItem});
+            this.fileFToolStripMenuItem.Name = "fileFToolStripMenuItem";
+            this.fileFToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+            this.fileFToolStripMenuItem.Text = "File(&F)";
             // 
-            // value
+            // openFileOToolStripMenuItem
             // 
-            this.value.Location = new System.Drawing.Point(269, 24);
-            this.value.MaxLength = 2100000000;
-            this.value.Multiline = true;
-            this.value.Name = "value";
-            this.value.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.value.Size = new System.Drawing.Size(503, 425);
-            this.value.TabIndex = 2;
+            this.openFileOToolStripMenuItem.Name = "openFileOToolStripMenuItem";
+            this.openFileOToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.openFileOToolStripMenuItem.Text = "Open File(&O)";
             // 
-            // label2
+            // tabControl
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(267, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 12);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Value";
+            this.tabControl.Location = new System.Drawing.Point(12, 27);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(860, 522);
+            this.tabControl.TabIndex = 0;
+            // 
+            // tabControlMenu
+            // 
+            this.tabControlMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.閉じるCToolStripMenuItem});
+            this.tabControlMenu.Name = "tabControlMenu";
+            this.tabControlMenu.Size = new System.Drawing.Size(120, 26);
+            // 
+            // 閉じるCToolStripMenuItem
+            // 
+            this.閉じるCToolStripMenuItem.Name = "閉じるCToolStripMenuItem";
+            this.閉じるCToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.閉じるCToolStripMenuItem.Text = "閉じる(&C)";
+            this.閉じるCToolStripMenuItem.Click += new System.EventHandler(this.閉じるCToolStripMenuItem_Click);
             // 
             // NBTViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 461);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.value);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.treeView);
+            this.ClientSize = new System.Drawing.Size(884, 561);
+            this.Controls.Add(this.tabControl);
+            this.Controls.Add(this.menuStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "NBTViewer";
             this.Text = "NBTViewer";
-            this.Load += new System.EventHandler(this.NBTViewer_Load);
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
+            this.tabControlMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -91,9 +105,11 @@
 
         #endregion
 
-        private System.Windows.Forms.TreeView treeView;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox value;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.MenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem fileFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openFileOToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.ContextMenuStrip tabControlMenu;
+        private System.Windows.Forms.ToolStripMenuItem 閉じるCToolStripMenuItem;
     }
 }

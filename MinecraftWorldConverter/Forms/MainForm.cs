@@ -3,11 +3,14 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MinecraftWorldConverter.Convertor;
+using MinecraftWorldConverter.Tools;
 
 namespace MinecraftWorldConverter.Forms
 {
     public partial class MainForm : Form
     {
+        private NBTViewer _viewer;
+
         public MainForm()
         {
             InitializeComponent();
@@ -47,6 +50,12 @@ namespace MinecraftWorldConverter.Forms
             }
 
             finishCheckWorker.RunWorkerAsync(tasks);
+        }
+
+        private void nBTViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _viewer = new NBTViewer();
+            _viewer.Show();
         }
 
         private void FinishCheckWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -95,6 +104,17 @@ namespace MinecraftWorldConverter.Forms
         public int GetProgressValue()
         {
             return progressBar.Value;
+        }
+
+        public NBTViewer GetNbtViewer()
+        {
+            return _viewer;
+        }
+
+        private void valueSpliterSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BitSpliter spliter = new BitSpliter();
+            spliter.Show();
         }
     }
 }

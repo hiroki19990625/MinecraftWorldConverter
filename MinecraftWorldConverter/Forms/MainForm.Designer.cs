@@ -40,11 +40,16 @@
             this.labelOld = new System.Windows.Forms.Label();
             this.labelNew = new System.Windows.Forms.Label();
             this.finishCheckWorker = new System.ComponentModel.BackgroundWorker();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.ツールTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nBTViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.valueSpliterSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox
             // 
-            this.textBox.Location = new System.Drawing.Point(12, 33);
+            this.textBox.Location = new System.Drawing.Point(12, 52);
             this.textBox.Name = "textBox";
             this.textBox.ReadOnly = true;
             this.textBox.Size = new System.Drawing.Size(360, 19);
@@ -53,7 +58,7 @@
             // label
             // 
             this.label.AutoSize = true;
-            this.label.Location = new System.Drawing.Point(10, 18);
+            this.label.Location = new System.Drawing.Point(10, 37);
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(47, 12);
             this.label.TabIndex = 1;
@@ -89,7 +94,7 @@
             // 
             this.oldList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.oldList.FormattingEnabled = true;
-            this.oldList.Location = new System.Drawing.Point(12, 109);
+            this.oldList.Location = new System.Drawing.Point(12, 128);
             this.oldList.Name = "oldList";
             this.oldList.Size = new System.Drawing.Size(121, 20);
             this.oldList.TabIndex = 5;
@@ -98,7 +103,7 @@
             // 
             this.newList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.newList.FormattingEnabled = true;
-            this.newList.Location = new System.Drawing.Point(251, 109);
+            this.newList.Location = new System.Drawing.Point(251, 128);
             this.newList.Name = "newList";
             this.newList.Size = new System.Drawing.Size(121, 20);
             this.newList.TabIndex = 6;
@@ -107,7 +112,7 @@
             // 
             this.arrow.AutoSize = true;
             this.arrow.Font = new System.Drawing.Font("MS UI Gothic", 20F);
-            this.arrow.Location = new System.Drawing.Point(169, 109);
+            this.arrow.Location = new System.Drawing.Point(169, 128);
             this.arrow.Name = "arrow";
             this.arrow.Size = new System.Drawing.Size(39, 27);
             this.arrow.TabIndex = 7;
@@ -115,7 +120,7 @@
             // 
             // refarence
             // 
-            this.refarence.Location = new System.Drawing.Point(12, 58);
+            this.refarence.Location = new System.Drawing.Point(12, 77);
             this.refarence.Name = "refarence";
             this.refarence.Size = new System.Drawing.Size(75, 23);
             this.refarence.TabIndex = 8;
@@ -126,7 +131,7 @@
             // labelOld
             // 
             this.labelOld.AutoSize = true;
-            this.labelOld.Location = new System.Drawing.Point(12, 94);
+            this.labelOld.Location = new System.Drawing.Point(12, 113);
             this.labelOld.Name = "labelOld";
             this.labelOld.Size = new System.Drawing.Size(101, 12);
             this.labelOld.TabIndex = 9;
@@ -135,11 +140,44 @@
             // labelNew
             // 
             this.labelNew.AutoSize = true;
-            this.labelNew.Location = new System.Drawing.Point(249, 94);
+            this.labelNew.Location = new System.Drawing.Point(249, 113);
             this.labelNew.Name = "labelNew";
             this.labelNew.Size = new System.Drawing.Size(101, 12);
             this.labelNew.TabIndex = 10;
             this.labelNew.Text = "変換後のフォーマット";
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ツールTToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(384, 24);
+            this.menuStrip1.TabIndex = 11;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // ツールTToolStripMenuItem
+            // 
+            this.ツールTToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.nBTViewerToolStripMenuItem,
+            this.valueSpliterSToolStripMenuItem});
+            this.ツールTToolStripMenuItem.Name = "ツールTToolStripMenuItem";
+            this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.ツールTToolStripMenuItem.Text = "ツール(&T)";
+            // 
+            // nBTViewerToolStripMenuItem
+            // 
+            this.nBTViewerToolStripMenuItem.Name = "nBTViewerToolStripMenuItem";
+            this.nBTViewerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.nBTViewerToolStripMenuItem.Text = "NBT Viewer(&N)";
+            this.nBTViewerToolStripMenuItem.Click += new System.EventHandler(this.nBTViewerToolStripMenuItem_Click);
+            // 
+            // valueSpliterSToolStripMenuItem
+            // 
+            this.valueSpliterSToolStripMenuItem.Name = "valueSpliterSToolStripMenuItem";
+            this.valueSpliterSToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.valueSpliterSToolStripMenuItem.Text = "Bit Spliter(&S)";
+            this.valueSpliterSToolStripMenuItem.Click += new System.EventHandler(this.valueSpliterSToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -157,11 +195,15 @@
             this.Controls.Add(this.button);
             this.Controls.Add(this.label);
             this.Controls.Add(this.textBox);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MinecraftWorldConverter";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -181,5 +223,9 @@
         private System.Windows.Forms.Label labelOld;
         private System.Windows.Forms.Label labelNew;
         private System.ComponentModel.BackgroundWorker finishCheckWorker;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem ツールTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nBTViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem valueSpliterSToolStripMenuItem;
     }
 }

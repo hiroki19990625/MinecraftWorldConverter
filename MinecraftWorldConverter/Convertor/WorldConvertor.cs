@@ -6,6 +6,10 @@ using System.Windows.Forms;
 using MinecraftWorldConverter.Formats.Region;
 using MinecraftWorldConverter.Forms;
 using MinecraftWorldConverter.Tools;
+using MinecraftWorldConverter.Utils;
+using MineNET.NBT.Data;
+using MineNET.NBT.Tags;
+using MineNET.Utils;
 
 namespace MinecraftWorldConverter.Convertor
 {
@@ -93,8 +97,104 @@ namespace MinecraftWorldConverter.Convertor
                 return;
             }
 
-            NBTViewer viewer = new NBTViewer(datas[0].Data);
-            viewer.ShowDialog();
+            NBTViewer viewer = Form.GetNbtViewer();
+            viewer?.LoadCompoundTag(datas[0].GetHashCode().ToString(), datas[0].Data);
+            foreach (ChunkData data in datas)
+            {
+                ConvertChunkData(data);
+            }
+
+            string fileName = Path.GetFileName(file);
+            string path = file.Replace(fileName, "");
+            string newPath = path.Remove(path.Length - 1, 1) + "Convert";
+            string newFile = newPath + Path.DirectorySeparatorChar + fileName;
+
+            if (!Directory.Exists(newPath))
+            {
+                Directory.CreateDirectory(newPath);
+            }
+
+            region.Write(newFile, datas);
+        }
+
+        private void ConvertChunkData(ChunkData data)
+        {
+            CompoundTag oldTag = data.Data.GetCompound("").GetCompound("Level");
+            CompoundTag newTag = (CompoundTag) data.Data.GetCompound("").GetCompound("Level").Clone();
+
+            ListTag sections = oldTag.GetList("Sections");
+            ListTag newSections = ConvertSections(sections);
+            newTag.Remove("Sections");
+            newTag.PutList(newSections);
+
+            data.Data = newTag;
+        }
+
+        private ListTag ConvertSections(ListTag sections)
+        {
+            ListTag list = new ListTag("Sections", NBTTagType.COMPOUND);
+            foreach (Tag sectionTag in sections.Tags)
+            {
+                if (sectionTag is CompoundTag)
+                {
+                    list.Add(ConvertSection(sectionTag));
+                }
+            }
+
+            return list;
+        }
+
+        private CompoundTag ConvertSection(Tag sectionTag)
+        {
+            CompoundTag newSection = new CompoundTag();
+            byte[] blockData = new byte[4096];
+            NibbleArray metaData = new NibbleArray(4096);
+
+            CompoundTag section = (CompoundTag) sectionTag;
+            long[] states = section.GetLongArray("BlockStates");
+            ListTag palette = section.GetList("Palette");
+            List<RuntimeTable.Table> indexs = new List<RuntimeTable.Table>();
+            foreach (Tag paletteTag in palette.Tags)
+            {
+                if (paletteTag is CompoundTag)
+                {
+                    CompoundTag pt = (CompoundTag) paletteTag;
+                    string name = pt.GetString("Name");
+                    indexs.Add(RuntimeTable.GetNameToTable(name));
+                }
+            }
+
+            int indexLen = indexs.Count;
+            if (indexLen % 64 == 0)
+            {
+                int c = 0;
+                int split = indexLen / 64;
+                foreach (long data in states)
+                {
+                    long tmp = data;
+                    for (int i = 0; i < split; i++)
+                    {
+                        int index = (int) ((tmp >>= split) & split);
+                        RuntimeTable.Table table = indexs[index];
+                        blockData[c] = (byte) (table.Id & 0xff);
+                        metaData[c] = (byte) (table.Data & 0xf);
+                        c++;
+                    }
+                }
+            }
+            else
+            {
+                //TODO ???
+            }
+
+            newSection = (CompoundTag) section.Clone();
+            newSection.Remove("BlockStates");
+            newSection.Remove("Palette");
+
+            newSection.PutByteArray("Blocks", blockData);
+            newSection.PutByteArray("Data", metaData.ArrayData);
+
+            return newSection;
         }
     }
 }

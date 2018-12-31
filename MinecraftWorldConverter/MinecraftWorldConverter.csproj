@@ -37,8 +37,11 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +51,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convertor\WorldConvertor.cs" />
@@ -84,15 +90,29 @@
     <Compile Include="NBT\Tags\Tag.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\BitSpliter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\BitSpliter.Designer.cs">
+      <DependentUpon>BitSpliter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Controls\ViewerTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Controls\ViewerTab.Designer.cs">
+      <DependentUpon>ViewerTab.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\NBTViewer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Tools\NBTViewer.Designer.cs">
       <DependentUpon>NBTViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\ArrayUtils.cs" />
     <Compile Include="Utils\Binary.cs" />
     <Compile Include="Utils\BinaryStream.cs" />
     <Compile Include="Utils\MemorySpan.cs" />
+    <Compile Include="Utils\RuntimeTable.cs" />
     <Compile Include="Utils\VarInt.cs" />
     <Compile Include="Utils\ZlibStream.cs" />
     <EmbeddedResource Include="Forms\MainForm.resx">
@@ -108,6 +128,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Tools\BitSpliter.resx">
+      <DependentUpon>BitSpliter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\Controls\ViewerTab.resx">
+      <DependentUpon>ViewerTab.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\NBTViewer.resx">
       <DependentUpon>NBTViewer.cs</DependentUpon>
     </EmbeddedResource>

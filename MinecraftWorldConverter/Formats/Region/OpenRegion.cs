@@ -109,6 +109,70 @@ namespace MinecraftWorldConverter.Formats.Region
             return new ChunkData(RegionPosition, new Tuple<int, int>(x, z), tag);
         }
 
+        public void Write(string filePath, ChunkData[] datas)
+        {
+            const int width = 32;
+            const int depth = 32;
+
+            File.Create(filePath).Close();
+
+            using (var regionFile = File.Open(filePath, FileMode.Open))
+            {
+                byte[] buffer = new byte[8192];
+                regionFile.Read(buffer, 0, buffer.Length);
+
+                for (int i = 0; i < datas.Length; i++)
+                {
+                    ChunkData data = datas[i];
+                    int xi = (data.ChunkOffset.Item1 % width);
+                    if (xi < 0) xi += 32;
+                    int zi = (data.ChunkOffset.Item2 % depth);
+                    if (zi < 0) zi += 32;
+                    int tableOffset = (xi + zi * width) * 4;
+
+                    regionFile.Seek(tableOffset, SeekOrigin.Begin);
+
+                    byte[] offsetBuffer = new byte[4];
+                    regionFile.Read(offsetBuffer, 0, 3);
+                    Array.Reverse(offsetBuffer);
+                    int offset = BitConverter.ToInt32(offsetBuffer, 0) << 4;
+                    byte sectorCount = (byte) regionFile.ReadByte();
+
+                    byte[] nbtBuf = NBTIO.WriteZLIBFile(data.Data.GetCompound(""));
+                    int nbtLength = nbtBuf.Length;
+                    byte nbtSectorCount = (byte) Math.Ceiling(nbtLength / 4096d);
+
+                    if (offset == 0 || sectorCount == 0 || nbtSectorCount > sectorCount)
+                    {
+                        regionFile.Seek(0, SeekOrigin.End);
+                        offset = (int) ((int) regionFile.Position & 0xfffffff0);
+
+                        regionFile.Seek(tableOffset, SeekOrigin.Begin);
+
+                        byte[] bytes = BitConverter.GetBytes(offset >> 4);
+                        Array.Reverse(bytes);
+                        regionFile.Write(bytes, 0, 3);
+                        regionFile.WriteByte(nbtSectorCount);
+                    }
+
+                    byte[] lenghtBytes = BitConverter.GetBytes(nbtLength + 1);
+                    Array.Reverse(lenghtBytes);
+
+                    regionFile.Seek(offset, SeekOrigin.Begin);
+                    regionFile.Write(lenghtBytes, 0, 4);
+                    regionFile.WriteByte(0x02);
+
+                    regionFile.Write(nbtBuf, 0, nbtBuf.Length);
+
+                    int reminder;
+                    Math.DivRem(nbtLength + 4, 4096, out reminder);
+
+                    byte[] padding = new byte[4096 - reminder];
+                    if (padding.Length > 0) regionFile.Write(padding, 0, padding.Length);
+                }
+            }
+        }
+
         public void Dispose()
         {
             throw new NotImplementedException();
