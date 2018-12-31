@@ -84,6 +84,12 @@
     <Compile Include="NBT\Tags\Tag.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\NBTViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\NBTViewer.Designer.cs">
+      <DependentUpon>NBTViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\Binary.cs" />
     <Compile Include="Utils\BinaryStream.cs" />
     <Compile Include="Utils\MemorySpan.cs" />
@@ -101,6 +107,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Tools\NBTViewer.resx">
+      <DependentUpon>NBTViewer.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

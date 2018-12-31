@@ -38,7 +38,9 @@ namespace MinecraftWorldConverter.Formats.Region
                 {
                     for (int z = 0; z < 32; z++)
                     {
-                        datas.Add(Read(x, z));
+                        ChunkData data = Read(x, z);
+                        if (data != null)
+                            datas.Add(data);
                     }
                 }
 

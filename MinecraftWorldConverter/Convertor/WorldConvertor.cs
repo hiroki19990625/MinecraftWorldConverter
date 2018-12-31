@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MinecraftWorldConverter.Formats.Region;
 using MinecraftWorldConverter.Forms;
+using MinecraftWorldConverter.Tools;
+using MineNET.NBT.Data;
+using MineNET.NBT.Tags;
 
 namespace MinecraftWorldConverter.Convertor
 {
@@ -14,7 +17,26 @@ namespace MinecraftWorldConverter.Convertor
 
         public WorldConvertor()
         {
+            ListTag list = new ListTag("list", NBTTagType.COMPOUND);
 
+            CompoundTag com = new CompoundTag();
+            com.PutInt("int", 123456);
+            com.PutLongArray("longArray", new long[5]);
+
+            list.Add(com);
+            list.Add(com);
+
+            CompoundTag tag = new CompoundTag();
+            tag.PutByte("byte", 0xfe);
+            tag.PutInt("int", 0xffffff);
+            tag.PutString("string", "ABC1234");
+            tag.PutFloat("float", 0.1245f);
+            tag.PutDouble("double", 0.456789d);
+            tag.PutCompound("compound", com);
+            tag.PutList(list);
+
+            //NBTViewer viewer = new NBTViewer(tag);
+            //viewer.Show();
         }
 
         public Task[] ConvertProcess(MainForm form)
@@ -87,7 +109,13 @@ namespace MinecraftWorldConverter.Convertor
                 return;
             }
 
+            if (datas.Length == 0)
+            {
+                return;
+            }
 
+            NBTViewer viewer = new NBTViewer(datas[0].Data);
+            viewer.Show();
         }
     }
 }
