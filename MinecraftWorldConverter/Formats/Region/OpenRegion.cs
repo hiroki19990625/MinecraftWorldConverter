@@ -114,7 +114,11 @@ namespace MinecraftWorldConverter.Formats.Region
             const int width = 32;
             const int depth = 32;
 
-            File.Create(filePath).Close();
+            using (var regionFile = File.Open(filePath, FileMode.CreateNew))
+            {
+                byte[] buffer = new byte[8192];
+                regionFile.Write(buffer, 0, buffer.Length);
+            }
 
             using (var regionFile = File.Open(filePath, FileMode.Open))
             {
@@ -138,7 +142,7 @@ namespace MinecraftWorldConverter.Formats.Region
                     int offset = BitConverter.ToInt32(offsetBuffer, 0) << 4;
                     byte sectorCount = (byte) regionFile.ReadByte();
 
-                    byte[] nbtBuf = NBTIO.WriteZLIBFile(data.Data.GetCompound(""));
+                    byte[] nbtBuf = NBTIO.WriteZLIBFile(new CompoundTag().PutCompound("", data.Data), NBTEndian.BIG_ENDIAN);
                     int nbtLength = nbtBuf.Length;
                     byte nbtSectorCount = (byte) Math.Ceiling(nbtLength / 4096d);
 

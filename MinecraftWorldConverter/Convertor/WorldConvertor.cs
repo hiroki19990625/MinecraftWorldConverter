@@ -97,12 +97,13 @@ namespace MinecraftWorldConverter.Convertor
                 return;
             }
 
-            NBTViewer viewer = Form.GetNbtViewer();
-            viewer?.LoadCompoundTag(datas[0].GetHashCode().ToString(), datas[0].Data);
             foreach (ChunkData data in datas)
             {
                 ConvertChunkData(data);
             }
+
+            NBTViewer viewer = Form.GetNbtViewer();
+            viewer?.LoadCompoundTag(datas[0].GetHashCode().ToString(), datas[0].Data);
 
             string fileName = Path.GetFileName(file);
             string path = file.Replace(fileName, "");
@@ -120,14 +121,22 @@ namespace MinecraftWorldConverter.Convertor
         private void ConvertChunkData(ChunkData data)
         {
             CompoundTag oldTag = data.Data.GetCompound("").GetCompound("Level");
-            CompoundTag newTag = (CompoundTag) data.Data.GetCompound("").GetCompound("Level").Clone();
+            CompoundTag newTag = (CompoundTag) oldTag.Clone();
 
             ListTag sections = oldTag.GetList("Sections");
             ListTag newSections = ConvertSections(sections);
             newTag.Remove("Sections");
             newTag.PutList(newSections);
 
-            data.Data = newTag;
+            List<byte> biomes = new List<byte>();
+            foreach (int b in oldTag.GetIntArray("Biomes"))
+            {
+                biomes.Add((byte) b);
+            }
+            newTag.Remove("Biomes");
+            newTag.PutByteArray("Biomes", biomes.ToArray());
+
+            data.Data = new CompoundTag("").PutCompound("Level", newTag);
         }
 
         private ListTag ConvertSections(ListTag sections)
@@ -164,27 +173,19 @@ namespace MinecraftWorldConverter.Convertor
                 }
             }
 
-            int indexLen = indexs.Count;
-            if (indexLen % 64 == 0)
+            int c = 0;
+            int split = 64 / 16;
+            foreach (long data in states)
             {
-                int c = 0;
-                int split = indexLen / 64;
-                foreach (long data in states)
+                long tmp = data;
+                for (int i = 0; i < split; i++)
                 {
-                    long tmp = data;
-                    for (int i = 0; i < split; i++)
-                    {
-                        int index = (int) ((tmp >>= split) & split);
-                        RuntimeTable.Table table = indexs[index];
-                        blockData[c] = (byte) (table.Id & 0xff);
-                        metaData[c] = (byte) (table.Data & 0xf);
-                        c++;
-                    }
+                    int index = (int) ((tmp >>= split) & 0xf);
+                    RuntimeTable.Table table = indexs[index];
+                    blockData[c] = (byte) (table.Id & 0xff);
+                    metaData[c] = (byte) (table.Data & 0xf);
+                    c++;
                 }
-            }
-            else
-            {
-                //TODO ???
             }
 
             newSection = (CompoundTag) section.Clone();

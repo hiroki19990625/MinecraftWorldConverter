@@ -18,7 +18,7 @@ namespace MinecraftWorldConverter.Tools.Controls
         {
             InitializeComponent();
 
-            NamedTag = tag;
+            NamedTag = (CompoundTag) tag.Clone();
             BuildTree();
         }
 
@@ -32,7 +32,7 @@ namespace MinecraftWorldConverter.Tools.Controls
 
         private void BuildTree()
         {
-            NamedTag.Name = "Root";
+            //NamedTag.Name = "Root";
 
             Queue<NodeData> stack = new Queue<NodeData>(20);
             stack.Enqueue(new NodeData(treeView.Nodes, NamedTag));
