@@ -12,12 +12,24 @@ namespace MinecraftWorldConverter.Tools
 
         private void button1_Click(object sender, EventArgs e)
         {
+            result.Text = "";
+
             long val = long.Parse(data.Text);
 
-            result.Text = "";
-            for (int i = 0; i < 16; i++)
+            string bin = Convert.ToString(val, 2);
+
+            int split = decimal.ToInt32(splitValue.Value);
+            int loop = 64 / split;
+            for (int i = 0; i < loop; i++)
             {
-                result.Text += ((val >>= 4) & 0xfL) + Environment.NewLine;
+                try
+                {
+                    result.AppendText(bin.Substring(split * i, split) + Environment.NewLine);
+                }
+                catch
+                {
+                    result.AppendText(bin.Substring(split * i));
+                }
             }
         }
     }

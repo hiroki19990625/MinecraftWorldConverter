@@ -44,6 +44,7 @@
             this.ツールTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nBTViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.valueSpliterSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loggerLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -160,7 +161,8 @@
             // 
             this.ツールTToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.nBTViewerToolStripMenuItem,
-            this.valueSpliterSToolStripMenuItem});
+            this.valueSpliterSToolStripMenuItem,
+            this.loggerLToolStripMenuItem});
             this.ツールTToolStripMenuItem.Name = "ツールTToolStripMenuItem";
             this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             this.ツールTToolStripMenuItem.Text = "ツール(&T)";
@@ -178,6 +180,13 @@
             this.valueSpliterSToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.valueSpliterSToolStripMenuItem.Text = "Bit Spliter(&S)";
             this.valueSpliterSToolStripMenuItem.Click += new System.EventHandler(this.valueSpliterSToolStripMenuItem_Click);
+            // 
+            // loggerLToolStripMenuItem
+            // 
+            this.loggerLToolStripMenuItem.Name = "loggerLToolStripMenuItem";
+            this.loggerLToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loggerLToolStripMenuItem.Text = "Logger(&L)";
+            this.loggerLToolStripMenuItem.Click += new System.EventHandler(this.loggerLToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -227,5 +236,6 @@
         private System.Windows.Forms.ToolStripMenuItem ツールTToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nBTViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem valueSpliterSToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loggerLToolStripMenuItem;
     }
 }

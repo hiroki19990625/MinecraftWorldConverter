@@ -102,6 +102,12 @@
     <Compile Include="Tools\Controls\ViewerTab.Designer.cs">
       <DependentUpon>ViewerTab.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\Logger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\Logger.Designer.cs">
+      <DependentUpon>Logger.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\NBTViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,6 +139,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\Controls\ViewerTab.resx">
       <DependentUpon>ViewerTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\Logger.resx">
+      <DependentUpon>Logger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\NBTViewer.resx">
       <DependentUpon>NBTViewer.cs</DependentUpon>

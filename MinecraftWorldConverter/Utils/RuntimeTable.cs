@@ -29,7 +29,9 @@ namespace MinecraftWorldConverter.Utils
 
                 if (!_nameToTable.ContainsKey(t.Name))
                     _nameToTable.Add(t.Name, t);
-                _fullBlockToTable.Add(t.Id << 4 | t.Data, t);
+
+                if (table.ContainsKey("id"))
+                    _fullBlockToTable.Add(t.Id << 4 | t.Data, t);
 
                 ++identity;
             }

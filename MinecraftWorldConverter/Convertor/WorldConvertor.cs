@@ -39,13 +39,18 @@ namespace MinecraftWorldConverter.Convertor
                 return null;
             }
 
+            Logger.Info("変換を開始しました。");
+
             try
             {
+                Logger.Info("--- 認識された RegionFile ---");
+
                 string region = filePath.Replace(Path.GetFileName(filePath), "") + "region";
                 DirectoryInfo dir = new DirectoryInfo(region);
                 List<string> files = new List<string>();
                 foreach (FileInfo info in dir.GetFiles())
                 {
+                    Logger.Info(info.FullName);
                     files.Add(info.FullName);
                 }
 
@@ -53,23 +58,40 @@ namespace MinecraftWorldConverter.Convertor
                 form.UpdateProgress(0, max);
                 form.UpdateState($"変換中... ({form.GetProgressValue()} / {max})");
 
+                Logger.Info("タスクの作成を開始。");
+
                 List<Task> tasks = new List<Task>();
                 foreach (string file in files)
                 {
                     Task task = new Task(() =>
                     {
-                        Convert(file);
-                        form.Invoke(new UpdateProcessDelegate(UpdateProcess), max);
+                        Logger.Info("タスクが開始されました。");
+                        try
+                        {
+                            Convert(file);
+                            form.Invoke(new UpdateProcessDelegate(UpdateProcess), max);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Error("エラーが発生しました。");
+                            Logger.Error(e);
+                        }
+                        Logger.Info("タスクが終了しました。");
                     });
                     tasks.Add(task);
+
+                    Logger.Info("タスクが作成されました。");
 
                     task.Start();
                 }
 
+                Logger.Info("タスクを全て実行中です。");
                 return tasks.ToArray();
             }
             catch (Exception e)
             {
+                Logger.Error("エラーが発生しました。");
+                Logger.Error(e);
                 MessageBox.Show(e.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
@@ -89,21 +111,25 @@ namespace MinecraftWorldConverter.Convertor
             ChunkData[] datas = region.Open();
             if (datas == null)
             {
+                Logger.Info("データが存在しないチャンク。");
                 return;
             }
 
             if (datas.Length == 0)
             {
+                Logger.Info("データが存在しないチャンク。");
                 return;
             }
 
+            Logger.Info("データを変換中。 >> " + region.RegionPosition);
             foreach (ChunkData data in datas)
             {
                 ConvertChunkData(data);
             }
+            Logger.Info("データの変換が完了しました。 >> " + region.RegionPosition);
 
-            NBTViewer viewer = Form.GetNbtViewer();
-            viewer?.LoadCompoundTag(datas[0].GetHashCode().ToString(), datas[0].Data);
+            // NBTViewer viewer = Form.GetNbtViewer();
+            // viewer?.LoadCompoundTag(datas[0].GetHashCode().ToString(), datas[0].Data);
 
             string fileName = Path.GetFileName(file);
             string path = file.Replace(fileName, "");
@@ -115,7 +141,9 @@ namespace MinecraftWorldConverter.Convertor
                 Directory.CreateDirectory(newPath);
             }
 
+            Logger.Info("データの書き込み中。 >> " + newFile);
             region.Write(newFile, datas);
+            Logger.Info("データの書き込み完了。 >> " + newFile);
         }
 
         private void ConvertChunkData(ChunkData data)
@@ -135,6 +163,17 @@ namespace MinecraftWorldConverter.Convertor
             }
             newTag.Remove("Biomes");
             newTag.PutByteArray("Biomes", biomes.ToArray());
+
+            newTag.Remove("Heightmaps");
+            int[] map = new int[256];
+            for (int i = 0; i < 256; i++)
+            {
+                map[i] = 0xff;
+            }
+            newTag.PutIntArray("Heightmap", map);
+
+            newTag.PutBool("TerrainPopulated", true);
+            newTag.PutBool("TerrainGenerated", true);
 
             data.Data = new CompoundTag("").PutCompound("Level", newTag);
         }
@@ -174,16 +213,16 @@ namespace MinecraftWorldConverter.Convertor
             }
 
             int c = 0;
-            int split = 64 / 16;
             foreach (long data in states)
             {
                 long tmp = data;
-                for (int i = 0; i < split; i++)
+                for (int i = 0; i < 16; i++)
                 {
-                    int index = (int) ((tmp >>= split) & 0xf);
-                    RuntimeTable.Table table = indexs[index];
+                    long index = tmp & 0xf;
+                    RuntimeTable.Table table = indexs[(int) index];
                     blockData[c] = (byte) (table.Id & 0xff);
                     metaData[c] = (byte) (table.Data & 0xf);
+                    tmp >>= 4;
                     c++;
                 }
             }
@@ -194,6 +233,8 @@ namespace MinecraftWorldConverter.Convertor
 
             newSection.PutByteArray("Blocks", blockData);
             newSection.PutByteArray("Data", metaData.ArrayData);
+
+            newSection.PutInt("Count", c);
 
             return newSection;
         }

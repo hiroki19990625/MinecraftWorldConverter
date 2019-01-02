@@ -9,10 +9,23 @@ namespace MinecraftWorldConverter.Forms
 {
     public partial class MainForm : Form
     {
+        private static MainForm _instance;
+
         private NBTViewer _viewer;
+        private Logger _logger;
+
+        internal static MainForm GetForm()
+        {
+            if (_instance != null)
+                return _instance;
+
+            throw new Exception("MainForm is Null");
+        }
 
         public MainForm()
         {
+            _instance = this;
+
             InitializeComponent();
 
             finishCheckWorker.DoWork += FinishCheckWorker_DoWork;
@@ -45,17 +58,12 @@ namespace MinecraftWorldConverter.Forms
             Task[] tasks = convertor.ConvertProcess(this);
             if (tasks == null)
             {
+                Logger.Error("変換に失敗しました。");
                 button.Enabled = true;
                 return;
             }
 
             finishCheckWorker.RunWorkerAsync(tasks);
-        }
-
-        private void nBTViewerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _viewer = new NBTViewer();
-            _viewer.Show();
         }
 
         private void FinishCheckWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -67,6 +75,7 @@ namespace MinecraftWorldConverter.Forms
         private void FinishCheckWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             UpdateState("変換完了!");
+            Logger.Info("変換が完了しました。");
             button.Enabled = true;
         }
 
@@ -111,10 +120,31 @@ namespace MinecraftWorldConverter.Forms
             return _viewer;
         }
 
+        public Logger GetLogger()
+        {
+            return _logger;
+        }
+
         private void valueSpliterSToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BitSpliter spliter = new BitSpliter();
             spliter.Show();
+        }
+
+        private void nBTViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_viewer == null)
+                _viewer = new NBTViewer();
+
+            _viewer.Show();
+        }
+
+        private void loggerLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_logger == null)
+                _logger = new Logger();
+
+            _logger.Show();
         }
     }
 }
