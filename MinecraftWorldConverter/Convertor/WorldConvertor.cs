@@ -212,17 +212,19 @@ namespace MinecraftWorldConverter.Convertor
                 }
             }
 
+            int bits = CheckMostBit(indexs.Count);
+            int count = (64 / bits);
             int c = 0;
             foreach (long data in states)
             {
                 long tmp = data;
-                for (int i = 0; i < 16; i++)
+                for (int i = 0; i < count; i++)
                 {
                     long index = tmp & 0xf;
                     RuntimeTable.Table table = indexs[(int) index];
                     blockData[c] = (byte) (table.Id & 0xff);
                     metaData[c] = (byte) (table.Data & 0xf);
-                    tmp >>= 4;
+                    tmp >>= bits;
                     c++;
                 }
             }
@@ -237,6 +239,19 @@ namespace MinecraftWorldConverter.Convertor
             newSection.PutInt("Count", c);
 
             return newSection;
+        }
+
+        private int CheckMostBit(int count)
+        {
+            int data = count << 20;
+            for (int i = 12; i >= 5; i--)
+            {
+                if ((data & 0x80000000) == 0x80000000)
+                    return i;
+                data <<= 1;
+            }
+
+            return 4;
         }
     }
 }
