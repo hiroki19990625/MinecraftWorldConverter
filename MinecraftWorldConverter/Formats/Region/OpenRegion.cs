@@ -114,11 +114,7 @@ namespace MinecraftWorldConverter.Formats.Region
             const int width = 32;
             const int depth = 32;
 
-            using (var regionFile = File.Open(filePath, FileMode.CreateNew))
-            {
-                byte[] buffer = new byte[8192];
-                regionFile.Write(buffer, 0, buffer.Length);
-            }
+            File.Copy(RegionPath, filePath);
 
             using (var regionFile = File.Open(filePath, FileMode.Open))
             {

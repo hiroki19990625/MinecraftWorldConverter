@@ -170,21 +170,21 @@
             // nBTViewerToolStripMenuItem
             // 
             this.nBTViewerToolStripMenuItem.Name = "nBTViewerToolStripMenuItem";
-            this.nBTViewerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.nBTViewerToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.nBTViewerToolStripMenuItem.Text = "NBT Viewer(&N)";
             this.nBTViewerToolStripMenuItem.Click += new System.EventHandler(this.nBTViewerToolStripMenuItem_Click);
             // 
             // valueSpliterSToolStripMenuItem
             // 
             this.valueSpliterSToolStripMenuItem.Name = "valueSpliterSToolStripMenuItem";
-            this.valueSpliterSToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.valueSpliterSToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.valueSpliterSToolStripMenuItem.Text = "Bit Spliter(&S)";
             this.valueSpliterSToolStripMenuItem.Click += new System.EventHandler(this.valueSpliterSToolStripMenuItem_Click);
             // 
             // loggerLToolStripMenuItem
             // 
             this.loggerLToolStripMenuItem.Name = "loggerLToolStripMenuItem";
-            this.loggerLToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loggerLToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.loggerLToolStripMenuItem.Text = "Logger(&L)";
             this.loggerLToolStripMenuItem.Click += new System.EventHandler(this.loggerLToolStripMenuItem_Click);
             // 

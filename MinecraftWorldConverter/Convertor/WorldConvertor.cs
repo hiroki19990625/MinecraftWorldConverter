@@ -118,9 +118,11 @@ namespace MinecraftWorldConverter.Convertor
 
             if (datas.Length == 0)
             {
-                Logger.Info("データが存在しないチャンク。");
+                Logger.Info("データが存在しない空チャンク。");
                 return;
             }
+
+            Logger.Info("[" + region.RegionPosition + "] " + datas.Length + "チャンク取得しました。");
 
             Logger.Info("データを変換中。 >> " + region.RegionPosition);
             foreach (ChunkData data in datas)
@@ -129,8 +131,8 @@ namespace MinecraftWorldConverter.Convertor
             }
             Logger.Info("データの変換が完了しました。 >> " + region.RegionPosition);
 
-            // NBTViewer viewer = Form.GetNbtViewer();
-            // viewer?.LoadCompoundTag(datas[0].GetHashCode().ToString(), datas[0].Data);
+            NBTViewer viewer = Form.GetNbtViewer();
+            viewer?.LoadCompoundTag(datas[0].GetHashCode().ToString(), datas[0].Data);
 
             string fileName = Path.GetFileName(file);
             string path = file.Replace(fileName, "");
@@ -154,24 +156,33 @@ namespace MinecraftWorldConverter.Convertor
 
             ListTag sections = oldTag.GetList("Sections");
             ListTag newSections = ConvertSections(sections);
-            newTag.Remove("Sections");
-            newTag.PutList(newSections);
-
-            List<byte> biomes = new List<byte>();
-            foreach (int b in oldTag.GetIntArray("Biomes"))
+            if (newSections != null)
             {
-                biomes.Add((byte) b);
-            }
-            newTag.Remove("Biomes");
-            newTag.PutByteArray("Biomes", biomes.ToArray());
+                newTag.Remove("Sections");
+                newTag.PutList(newSections);
 
-            newTag.Remove("Heightmaps");
+                List<byte> biomes = new List<byte>();
+                foreach (int b in oldTag.GetIntArray("Biomes"))
+                {
+                    biomes.Add((byte) b);
+                }
+                newTag.Remove("Biomes");
+                newTag.PutByteArray("Biomes", biomes.ToArray());
+            }
+
+            if (newTag.Exist("Heightmaps"))
+                newTag.Remove("Heightmaps");
+            else
+                newTag.Remove("HeightMap");
+
             int[] map = new int[256];
             for (int i = 0; i < 256; i++)
             {
                 map[i] = 0xff;
             }
-            newTag.PutIntArray("Heightmap", map);
+            newTag.PutIntArray("HeightMap", map);
+
+            newTag.PutList(new ListTag("TileTicks", NBTTagType.COMPOUND));
 
             newTag.PutBool("TerrainPopulated", true);
             newTag.PutBool("TerrainGenerated", true);
@@ -186,7 +197,10 @@ namespace MinecraftWorldConverter.Convertor
             {
                 if (sectionTag is CompoundTag)
                 {
-                    list.Add(ConvertSection(sectionTag));
+                    if (((CompoundTag) sectionTag).Exist("Palette"))
+                        list.Add(ConvertSection(sectionTag));
+                    else
+                        return null;
                 }
             }
 
