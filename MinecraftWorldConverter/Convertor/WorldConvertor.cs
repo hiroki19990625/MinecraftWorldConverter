@@ -131,9 +131,6 @@ namespace MinecraftWorldConverter.Convertor
             }
             Logger.Info("データの変換が完了しました。 >> " + region.RegionPosition);
 
-            NBTViewer viewer = Form.GetNbtViewer();
-            viewer?.LoadCompoundTag(datas[0].GetHashCode().ToString(), datas[0].Data);
-
             string fileName = Path.GetFileName(file);
             string path = file.Replace(fileName, "");
             string newPath = path.Remove(path.Length - 1, 1) + "Convert";
@@ -184,8 +181,17 @@ namespace MinecraftWorldConverter.Convertor
 
             newTag.PutList(new ListTag("TileTicks", NBTTagType.COMPOUND));
 
+            newTag.PutList(new ListTag("Entities", NBTTagType.COMPOUND));
+            newTag.PutList(new ListTag("TileEntities", NBTTagType.COMPOUND));
+
             newTag.PutBool("TerrainPopulated", true);
             newTag.PutBool("TerrainGenerated", true);
+
+            if (sections.Count > 7)
+            {
+                NBTViewer viewer = Form.GetNbtViewer();
+                viewer?.LoadCompoundTag(oldTag.GetInt("xPos") + "," + oldTag.GetInt("zPos"), newTag);
+            }
 
             data.Data = new CompoundTag("").PutCompound("Level", newTag);
         }
@@ -209,7 +215,6 @@ namespace MinecraftWorldConverter.Convertor
 
         private CompoundTag ConvertSection(Tag sectionTag)
         {
-            CompoundTag newSection = new CompoundTag();
             byte[] blockData = new byte[4096];
             NibbleArray metaData = new NibbleArray(4096);
 
@@ -258,7 +263,7 @@ namespace MinecraftWorldConverter.Convertor
                 }
             }
 
-            newSection = (CompoundTag) section.Clone();
+            var newSection = (CompoundTag) section.Clone();
             newSection.Remove("BlockStates");
             newSection.Remove("Palette");
 

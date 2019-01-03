@@ -58,55 +58,53 @@ namespace MinecraftWorldConverter.Formats.Region
             const int width = 32;
             const int depth = 32;
 
-            FileStream regionFile = File.OpenRead(RegionPath);
-            byte[] buffer = new byte[8192];
-
-            regionFile.Read(buffer, 0, 8192);
-
-            int xi = (x % width);
-            if (xi < 0) xi += 32;
-            int zi = (z % depth);
-            if (zi < 0) zi += 32;
-            int tableOffset = (xi + zi * width) * 4;
-
-            regionFile.Seek(tableOffset, SeekOrigin.Begin);
-
-            byte[] offsetBuffer = new byte[4];
-            regionFile.Read(offsetBuffer, 0, 3);
-            Array.Reverse(offsetBuffer);
-            int offset = BitConverter.ToInt32(offsetBuffer, 0) << 4;
-
-            byte[] bytes = BitConverter.GetBytes(offset >> 4);
-            Array.Reverse(bytes);
-            if (offset != 0 && offsetBuffer[0] != bytes[0] && offsetBuffer[1] != bytes[1] &&
-                offsetBuffer[2] != bytes[2])
+            using (FileStream regionFile = File.OpenRead(RegionPath))
             {
-                throw new FormatException();
+                byte[] buffer = new byte[8192];
+
+                regionFile.Read(buffer, 0, 8192);
+
+                int xi = (x % width);
+                if (xi < 0) xi += 32;
+                int zi = (z % depth);
+                if (zi < 0) zi += 32;
+                int tableOffset = (xi + zi * width) * 4;
+
+                regionFile.Seek(tableOffset, SeekOrigin.Begin);
+
+                byte[] offsetBuffer = new byte[4];
+                regionFile.Read(offsetBuffer, 0, 3);
+                Array.Reverse(offsetBuffer);
+                int offset = BitConverter.ToInt32(offsetBuffer, 0) << 4;
+
+                byte[] bytes = BitConverter.GetBytes(offset >> 4);
+                Array.Reverse(bytes);
+                if (offset != 0 && offsetBuffer[0] != bytes[0] && offsetBuffer[1] != bytes[1] &&
+                    offsetBuffer[2] != bytes[2])
+                {
+                    throw new FormatException();
+                }
+
+                int length = regionFile.ReadByte();
+
+                if (offset == 0 || length == 0)
+                {
+                    return null;
+                }
+
+                regionFile.Seek(offset, SeekOrigin.Begin);
+                byte[] waste = new byte[4];
+                regionFile.Read(waste, 0, 4);
+                int compressionMode = regionFile.ReadByte();
+
+                if (compressionMode != 0x02)
+                {
+                    throw new FormatException();
+                }
+
+                CompoundTag tag = NBTIO.ReadZLIBFile(new BinaryReader(regionFile).ReadBytes((int) (regionFile.Length - regionFile.Position)), NBTEndian.BIG_ENDIAN);
+                return new ChunkData(RegionPosition, new Tuple<int, int>(x, z), tag);
             }
-
-            int length = regionFile.ReadByte();
-
-            if (offset == 0 || length == 0)
-            {
-                regionFile.Close();
-                return null;
-            }
-
-            regionFile.Seek(offset, SeekOrigin.Begin);
-            byte[] waste = new byte[4];
-            regionFile.Read(waste, 0, 4);
-            int compressionMode = regionFile.ReadByte();
-
-            if (compressionMode != 0x02)
-            {
-                regionFile.Close();
-                throw new FormatException();
-            }
-
-            CompoundTag tag = NBTIO.ReadZLIBFile(new BinaryReader(regionFile).ReadBytes((int) (regionFile.Length - regionFile.Position)), NBTEndian.BIG_ENDIAN);
-            regionFile.Close();
-
-            return new ChunkData(RegionPosition, new Tuple<int, int>(x, z), tag);
         }
 
         public void Write(string filePath, ChunkData[] datas)
