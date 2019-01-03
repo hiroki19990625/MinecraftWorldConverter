@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -212,20 +213,34 @@ namespace MinecraftWorldConverter.Convertor
                 }
             }
 
-            int bits = CheckMostBit(indexs.Count);
-            int count = (64 / bits);
-            int c = 0;
-            foreach (long data in states)
+            int bits = CheckMostBit(indexs.Count - 1);
+            List<byte> fixStates = new List<byte>();
+            foreach (long state in states)
             {
-                long tmp = data;
-                for (int i = 0; i < count; i++)
+                fixStates.AddRange(BitConverter.GetBytes((ulong) state));
+            }
+
+            BitArray stateBits = new BitArray(fixStates.ToArray());
+            for (int i = 0; i < 4096; i++)
+            {
+                int bitOffset = i * bits;
+                uint index = stateBits.Get(bitOffset + bits - 1) ? 1u : 0u;
+                for (int j = bits - 2; j >= 0; j--)
                 {
-                    long index = tmp & 0xf;
+                    index <<= 1;
+                    index |= stateBits.Get(bitOffset + j) ? 1u : 0u;
+                }
+
+                try
+                {
                     RuntimeTable.Table table = indexs[(int) index];
-                    blockData[c] = (byte) (table.Id & 0xff);
-                    metaData[c] = (byte) (table.Data & 0xf);
-                    tmp >>= bits;
-                    c++;
+                    blockData[i] = (byte) (table.Id & 0xff);
+                    metaData[i] = (byte) (table.Data & 0xf);
+                }
+                catch (Exception e)
+                {
+                    Logger.Info(indexs.Count + " = " + states[0] + " >>> " + states[1]);
+                    throw e;
                 }
             }
 
@@ -235,8 +250,6 @@ namespace MinecraftWorldConverter.Convertor
 
             newSection.PutByteArray("Blocks", blockData);
             newSection.PutByteArray("Data", metaData.ArrayData);
-
-            newSection.PutInt("Count", c);
 
             return newSection;
         }
