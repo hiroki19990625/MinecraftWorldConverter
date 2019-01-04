@@ -191,12 +191,6 @@ namespace MinecraftWorldConverter.Convertor
             newTag.Remove("CarvingMasks");
             newTag.Remove("Structures");
 
-            if (sections.Count > 7)
-            {
-                NBTViewer viewer = Form.GetNbtViewer();
-                viewer?.LoadCompoundTag(oldTag.GetInt("xPos") + "," + oldTag.GetInt("zPos"), newTag);
-            }
-
             data.Data = new CompoundTag("").PutCompound("Level", newTag);
         }
 
