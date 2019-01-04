@@ -23,7 +23,7 @@ namespace MinecraftWorldConverter.Convertor
 
         }
 
-        public Task[] ConvertProcess(MainForm form)
+        public Task<bool>[] ConvertProcess(MainForm form)
         {
             Form = form;
 
@@ -61,7 +61,7 @@ namespace MinecraftWorldConverter.Convertor
 
                 Logger.Info("タスクの作成を開始。");
 
-                List<Task> tasks = new List<Task>();
+                List<Task<bool>> tasks = new List<Task<bool>>();
                 foreach (string file in files)
                 {
                     Task<bool> task = new Task<bool>(() =>
@@ -70,7 +70,6 @@ namespace MinecraftWorldConverter.Convertor
                         try
                         {
                             Convert(file);
-                            form.Invoke(new UpdateProcessDelegate(UpdateProcess), max);
                             Logger.Info("タスクが終了しました。");
 
                             return true;
@@ -102,14 +101,6 @@ namespace MinecraftWorldConverter.Convertor
             }
         }
 
-        private delegate void UpdateProcessDelegate(int max);
-
-        private void UpdateProcess(int max)
-        {
-            Form.UpdateProgressAdd();
-            Form.UpdateState($"変換中... ({Form.GetProgressValue()} / {max})");
-        }
-
         public void Convert(string file)
         {
             OpenRegion region = new OpenRegion(file);
@@ -126,6 +117,8 @@ namespace MinecraftWorldConverter.Convertor
                 return;
             }
 
+            CheckCancel();
+
             Logger.Info("[" + region.RegionPosition + "] " + datas.Length + "チャンク取得しました。");
 
             Logger.Info("データを変換中。 >> " + region.RegionPosition);
@@ -134,6 +127,8 @@ namespace MinecraftWorldConverter.Convertor
                 ConvertChunkData(data);
             }
             Logger.Info("データの変換が完了しました。 >> " + region.RegionPosition);
+
+            CheckCancel();
 
             string fileName = Path.GetFileName(file);
             string path = file.Replace(fileName, "");
@@ -170,6 +165,8 @@ namespace MinecraftWorldConverter.Convertor
                 newTag.Remove("Biomes");
                 newTag.PutByteArray("Biomes", biomes.ToArray());
             }
+
+            CheckCancel();
 
             if (newTag.Exist("Heightmaps"))
                 newTag.Remove("Heightmaps");
@@ -210,6 +207,7 @@ namespace MinecraftWorldConverter.Convertor
             {
                 if (sectionTag is CompoundTag)
                 {
+                    CheckCancel();
                     if (((CompoundTag) sectionTag).Exist("Palette"))
                         list.Add(ConvertSection(sectionTag));
                     else
@@ -278,6 +276,12 @@ namespace MinecraftWorldConverter.Convertor
             newSection.PutByteArray("Data", metaData.ArrayData);
 
             return newSection;
+        }
+
+        private void CheckCancel()
+        {
+            if (Form.TaskCancel)
+                throw new TaskCanceledException();
         }
 
         private int CheckMostBit(int count)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,6 +14,10 @@ namespace MinecraftWorldConverter.Forms
 
         private NBTViewer _viewer;
         private Logger _logger;
+
+        private bool _error;
+
+        internal bool TaskCancel { get; private set; }
 
         internal static MainForm GetForm()
         {
@@ -65,7 +70,7 @@ namespace MinecraftWorldConverter.Forms
             else
             {
                 WorldConvertor convertor = new WorldConvertor();
-                Task[] tasks = convertor.ConvertProcess(this);
+                Task<bool>[] tasks = convertor.ConvertProcess(this);
                 if (tasks == null)
                 {
                     Logger.Error("変換に失敗しました。");
@@ -74,42 +79,81 @@ namespace MinecraftWorldConverter.Forms
                 }
 
                 finishCheckWorker.RunWorkerAsync(tasks);
-                /*button.Text = "キャンセル";
+                button.Text = "キャンセル";
                 button.Tag = "Exec";
-                button.Enabled = true;*/
+                button.Enabled = true;
             }
         }
 
         private void FinishCheckWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Task[] tasks = (Task[]) e.Argument;
-            e.Result = tasks;
-            Task.WaitAll(tasks);
+            Task<bool>[] tasks = (Task<bool>[]) e.Argument;
+            Queue<Task<bool>> queue = new Queue<Task<bool>>(tasks);
+            while (queue.Count > 0)
+            {
+                if (finishCheckWorker.CancellationPending)
+                {
+                    TaskCancel = true;
+                    Task.WaitAll(tasks);
+                    e.Cancel = true;
+                    return;
+                }
+
+                Task<bool> task = queue.Dequeue();
+                if (task.Wait(1))
+                {
+                    if (!task.Result)
+                    {
+                        TaskCancel = true;
+                        Task.WaitAll(tasks);
+
+                        if (!finishCheckWorker.CancellationPending)
+                            _error = true;
+                        e.Cancel = true;
+                        return;
+                    }
+                    else
+                    {
+                        UpdateState($"変換中... ({GetProgressValue()} / {tasks.Length})");
+                        UpdateProgressAdd();
+                    }
+                }
+                else
+                {
+                    queue.Enqueue(task);
+                }
+            }
         }
 
         private void FinishCheckWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
-                button.Text = "変換";
-                button.Tag = "";
-                button.Enabled = true;
+                TaskCancel = false;
 
-                /*Task[] tasks = (Task[]) e.Result;
-                foreach (Task task in tasks)
+                if (_error)
                 {
-                    task
-                }*/
+                    Logger.Info("エラーが発生しました。");
+                    UpdateState("エラーが発生しました。(ツールのLoggerを使用してエラーを確認してください)");
+                    UpdateProgress(0, 0);
+                }
+                else
+                {
+                    Logger.Info("キャンセルしました。");
+                    UpdateState("キャンセルしました");
+                    UpdateProgress(0, 0);
+                }
 
-                Logger.Info("キャンセルしました。");
             }
             else
             {
                 UpdateState("変換完了!");
                 Logger.Info("変換が完了しました。");
-                button.Enabled = true;
             }
 
+            button.Text = "変換";
+            button.Tag = "";
+            button.Enabled = true;
         }
 
         public string GetFilePath()
@@ -148,14 +192,25 @@ namespace MinecraftWorldConverter.Forms
             return progressBar.Value;
         }
 
+        public int GetProgressMaxValue()
+        {
+            return progressBar.Maximum;
+        }
+
         public NBTViewer GetNbtViewer()
         {
-            return _viewer;
+            if (!_viewer.IsDisposed)
+                return _viewer;
+
+            return null;
         }
 
         public Logger GetLogger()
         {
-            return _logger;
+            if (!_logger.IsDisposed)
+                return _logger;
+
+            return null;
         }
 
         private void valueSpliterSToolStripMenuItem_Click(object sender, EventArgs e)
@@ -166,7 +221,7 @@ namespace MinecraftWorldConverter.Forms
 
         private void nBTViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_viewer == null)
+            if (_viewer == null || _viewer.IsDisposed)
                 _viewer = new NBTViewer();
 
             _viewer.Show();
@@ -174,15 +229,16 @@ namespace MinecraftWorldConverter.Forms
 
         private void loggerLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_logger == null)
+            if (_logger == null || _logger.IsDisposed)
                 _logger = new Logger();
 
             _logger.Show();
         }
 
-        private void ライセンスLToolStripMenuItem_Click(object sender, EventArgs e)
+        private void licenseLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            LicenseForm form = new LicenseForm();
+            form.ShowDialog();
         }
     }
 }
