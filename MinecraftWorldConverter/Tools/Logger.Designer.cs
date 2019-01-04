@@ -37,11 +37,12 @@
             // 
             // loggerData
             // 
-            this.loggerData.Location = new System.Drawing.Point(12, 27);
+            this.loggerData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.loggerData.Location = new System.Drawing.Point(0, 24);
             this.loggerData.Multiline = true;
             this.loggerData.Name = "loggerData";
             this.loggerData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.loggerData.Size = new System.Drawing.Size(660, 522);
+            this.loggerData.Size = new System.Drawing.Size(684, 537);
             this.loggerData.TabIndex = 0;
             this.loggerData.WordWrap = false;
             // 
@@ -60,14 +61,14 @@
             this.displayDToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.allClearCToolStripMenuItem});
             this.displayDToolStripMenuItem.Name = "displayDToolStripMenuItem";
-            this.displayDToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
-            this.displayDToolStripMenuItem.Text = "Display(&D)";
+            this.displayDToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.displayDToolStripMenuItem.Text = "表示(&D)";
             // 
             // allClearCToolStripMenuItem
             // 
             this.allClearCToolStripMenuItem.Name = "allClearCToolStripMenuItem";
-            this.allClearCToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
-            this.allClearCToolStripMenuItem.Text = "All Clear(&C)";
+            this.allClearCToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.allClearCToolStripMenuItem.Text = "全てクリア(&C)";
             this.allClearCToolStripMenuItem.Click += new System.EventHandler(this.allClearCToolStripMenuItem_Click);
             // 
             // Logger
@@ -77,7 +78,6 @@
             this.ClientSize = new System.Drawing.Size(684, 561);
             this.Controls.Add(this.loggerData);
             this.Controls.Add(this.menuStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Logger";
             this.Text = "Logger";

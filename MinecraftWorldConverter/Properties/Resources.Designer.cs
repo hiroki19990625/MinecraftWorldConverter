@@ -63,16 +63,6 @@ namespace MinecraftWorldConverter.Properties {
         /// <summary>
         ///   型 System.Byte[] のローカライズされたリソースを検索します。
         /// </summary>
-        internal static byte[] block_states {
-            get {
-                object obj = ResourceManager.GetObject("block_states", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   型 System.Byte[] のローカライズされたリソースを検索します。
-        /// </summary>
         internal static byte[] runtimeid_table {
             get {
                 object obj = ResourceManager.GetObject("runtimeid_table", resourceCulture);

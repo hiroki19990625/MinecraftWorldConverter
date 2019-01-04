@@ -64,20 +64,24 @@ namespace MinecraftWorldConverter.Convertor
                 List<Task> tasks = new List<Task>();
                 foreach (string file in files)
                 {
-                    Task task = new Task(() =>
+                    Task<bool> task = new Task<bool>(() =>
                     {
                         Logger.Info("タスクが開始されました。");
                         try
                         {
                             Convert(file);
                             form.Invoke(new UpdateProcessDelegate(UpdateProcess), max);
+                            Logger.Info("タスクが終了しました。");
+
+                            return true;
                         }
                         catch (Exception e)
                         {
                             Logger.Error("エラーが発生しました。");
                             Logger.Error(e);
+
+                            return false;
                         }
-                        Logger.Info("タスクが終了しました。");
                     }, TaskCreationOptions.LongRunning);
                     tasks.Add(task);
 

@@ -127,6 +127,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.data);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MaximizeBox = false;
             this.Name = "BitSpliter";
             this.Text = "BitSpliter";
             ((System.ComponentModel.ISupportInitialize)(this.splitValue)).EndInit();

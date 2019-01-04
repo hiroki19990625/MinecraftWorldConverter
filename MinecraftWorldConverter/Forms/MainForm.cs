@@ -58,29 +58,58 @@ namespace MinecraftWorldConverter.Forms
         {
             button.Enabled = false;
 
-            WorldConvertor convertor = new WorldConvertor();
-            Task[] tasks = convertor.ConvertProcess(this);
-            if (tasks == null)
+            if (button.Tag?.ToString() == "Exec")
             {
-                Logger.Error("変換に失敗しました。");
-                button.Enabled = true;
-                return;
+                finishCheckWorker.CancelAsync();
             }
+            else
+            {
+                WorldConvertor convertor = new WorldConvertor();
+                Task[] tasks = convertor.ConvertProcess(this);
+                if (tasks == null)
+                {
+                    Logger.Error("変換に失敗しました。");
+                    button.Enabled = true;
+                    return;
+                }
 
-            finishCheckWorker.RunWorkerAsync(tasks);
+                finishCheckWorker.RunWorkerAsync(tasks);
+                button.Text = "キャンセル";
+                button.Tag = "Exec";
+                button.Enabled = true;
+            }
         }
 
         private void FinishCheckWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             Task[] tasks = (Task[]) e.Argument;
+            e.Result = tasks;
             Task.WaitAll(tasks);
         }
 
         private void FinishCheckWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            UpdateState("変換完了!");
-            Logger.Info("変換が完了しました。");
-            button.Enabled = true;
+            if (e.Cancelled)
+            {
+                button.Text = "変換";
+                button.Tag = "";
+                button.Enabled = true;
+
+                /*Task[] tasks = (Task[]) e.Result;
+                foreach (Task task in tasks)
+                {
+                    task
+                }*/
+
+                Logger.Info("キャンセルしました。");
+            }
+            else
+            {
+                UpdateState("変換完了!");
+                Logger.Info("変換が完了しました。");
+                button.Enabled = true;
+            }
+
         }
 
         public string GetFilePath()
@@ -149,6 +178,11 @@ namespace MinecraftWorldConverter.Forms
                 _logger = new Logger();
 
             _logger.Show();
+        }
+
+        private void ライセンスLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

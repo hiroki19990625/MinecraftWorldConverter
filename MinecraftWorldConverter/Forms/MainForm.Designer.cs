@@ -45,6 +45,8 @@
             this.nBTViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.valueSpliterSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loggerLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpHToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.licenseLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -147,10 +149,15 @@
             this.labelNew.TabIndex = 10;
             this.labelNew.Text = "変換後のフォーマット";
             // 
+            // finishCheckWorker
+            // 
+            this.finishCheckWorker.WorkerSupportsCancellation = true;
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ツールTToolStripMenuItem});
+            this.ツールTToolStripMenuItem,
+            this.helpHToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(384, 24);
@@ -188,6 +195,20 @@
             this.loggerLToolStripMenuItem.Text = "Logger(&L)";
             this.loggerLToolStripMenuItem.Click += new System.EventHandler(this.loggerLToolStripMenuItem_Click);
             // 
+            // helpHToolStripMenuItem
+            // 
+            this.helpHToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.licenseLToolStripMenuItem});
+            this.helpHToolStripMenuItem.Name = "helpHToolStripMenuItem";
+            this.helpHToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.helpHToolStripMenuItem.Text = "ヘルプ(&H)";
+            // 
+            // licenseLToolStripMenuItem
+            // 
+            this.licenseLToolStripMenuItem.Name = "licenseLToolStripMenuItem";
+            this.licenseLToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.licenseLToolStripMenuItem.Text = "ライセンス(&L)";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -207,6 +228,7 @@
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MinecraftWorldConverter";
@@ -237,5 +259,7 @@
         private System.Windows.Forms.ToolStripMenuItem nBTViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem valueSpliterSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loggerLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpHToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem licenseLToolStripMenuItem;
     }
 }

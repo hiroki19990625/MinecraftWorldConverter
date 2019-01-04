@@ -34,5 +34,10 @@ namespace MinecraftWorldConverter.Tools
         {
             tabControl.TabPages.Remove(tabControl.SelectedTab);
         }
+
+        private void closeAllAToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            tabControl.TabPages.Clear();
+        }
     }
 }
