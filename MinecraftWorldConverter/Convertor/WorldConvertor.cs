@@ -78,7 +78,7 @@ namespace MinecraftWorldConverter.Convertor
                             Logger.Error(e);
                         }
                         Logger.Info("タスクが終了しました。");
-                    });
+                    }, TaskCreationOptions.LongRunning);
                     tasks.Add(task);
 
                     Logger.Info("タスクが作成されました。");
@@ -187,6 +187,9 @@ namespace MinecraftWorldConverter.Convertor
             newTag.PutBool("TerrainPopulated", true);
             newTag.PutBool("TerrainGenerated", true);
 
+            newTag.Remove("CarvingMasks");
+            newTag.Remove("Structures");
+
             if (sections.Count > 7)
             {
                 NBTViewer viewer = Form.GetNbtViewer();
@@ -228,7 +231,7 @@ namespace MinecraftWorldConverter.Convertor
                 {
                     CompoundTag pt = (CompoundTag) paletteTag;
                     string name = pt.GetString("Name");
-                    indexs.Add(RuntimeTable.GetNameToTable(name));
+                    indexs.Add(RuntimeTable.GetNameToTable(name, pt.GetCompound("Properties").Tags));
                 }
             }
 

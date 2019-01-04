@@ -34,7 +34,11 @@ namespace MinecraftWorldConverter.Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            oldList.Items.Add("Java Edition");
+            newList.Items.Add("Nukkit");
 
+            oldList.SelectedIndex = 0;
+            newList.SelectedIndex = 0;
         }
 
         private void refarence_Click(object sender, EventArgs e)
