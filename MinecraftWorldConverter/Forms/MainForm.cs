@@ -74,9 +74,9 @@ namespace MinecraftWorldConverter.Forms
                 }
 
                 finishCheckWorker.RunWorkerAsync(tasks);
-                button.Text = "キャンセル";
+                /*button.Text = "キャンセル";
                 button.Tag = "Exec";
-                button.Enabled = true;
+                button.Enabled = true;*/
             }
         }
 
