@@ -206,7 +206,7 @@
             // licenseLToolStripMenuItem
             // 
             this.licenseLToolStripMenuItem.Name = "licenseLToolStripMenuItem";
-            this.licenseLToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.licenseLToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.licenseLToolStripMenuItem.Text = "ライセンス(&L)";
             this.licenseLToolStripMenuItem.Click += new System.EventHandler(this.licenseLToolStripMenuItem_Click);
             // 

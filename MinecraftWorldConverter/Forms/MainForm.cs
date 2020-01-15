@@ -199,18 +199,30 @@ namespace MinecraftWorldConverter.Forms
 
         public NBTViewer GetNbtViewer()
         {
-            if (!_viewer.IsDisposed)
-                return _viewer;
+            if (_viewer != null)
+            {
+                if (!_viewer.IsDisposed)
+                    return _viewer;
+            }
 
-            return null;
+            _viewer = new NBTViewer();
+            _viewer.Show();
+
+            return _viewer;
         }
 
         public Logger GetLogger()
         {
-            if (!_logger.IsDisposed)
-                return _logger;
+            if (_logger != null)
+            {
+                if (!_logger.IsDisposed)
+                    return _logger;
+            }
 
-            return null;
+            _logger = new Logger();
+            _logger.Show();
+
+            return _logger;
         }
 
         private void valueSpliterSToolStripMenuItem_Click(object sender, EventArgs e)
